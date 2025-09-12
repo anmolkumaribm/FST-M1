@@ -28,12 +28,9 @@ public class Activity1 {
 		UiAutomator2Options options = new UiAutomator2Options();
 		options.setPlatformName("android");
 		options.setAutomationName("UiAutomator2");
-//		options.setApp("path/to/application.apk");
-		options.setApp("C:/Users/AshaAnnaThomas/eclipse-workspace/FST_Appium/src/test/resources/Calculator.apk");
+		options.setApp("C:/Users/AnmolKumar/eclipse-workspace/fstAppium/src/test/resources/Calculator.apk");
 		
 		//Only for android
-//		options.setAppPackage("com.google.android.calculator");
-//		options.setAppActivity("com.android.calculator2.Calculator");
 		options.noReset();
 		
 		//set the appium server url
@@ -47,7 +44,7 @@ public class Activity1 {
 	public void multiplyTest() {
 		
 		driver.findElement(AppiumBy.id("digit_5")).click();
-		driver.findElement(AppiumBy.accessibilityId("multiply")).click();
+		driver.findElement(AppiumBy.xpath("//android.widget.ImageButton[@content-desc='multiply']")).click();
 		driver.findElement(AppiumBy.id("digit_8")).click();
 		driver.findElement(AppiumBy.accessibilityId("equals")).click();
 		
