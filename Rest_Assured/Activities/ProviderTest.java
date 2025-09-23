@@ -1,6 +1,5 @@
 package activities;
 
-
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
@@ -26,17 +25,17 @@ public class ProviderTest {
         context.verifyInteraction();
     }
 
-//    @State("POST Request")
-//    public void state1() {
-//    }
-//
-//    @State("GET Request")
-//    public void state2() {
-//    }
-//
-//    @State("DELETE Request")
-//    public void state3() {
-//    }
+    @State("POST Request")
+    public void state1() {
+    }
+
+    @State("GET Request")
+    public void state2() {
+    }
+
+    @State("DELETE Request")
+    public void state3() {
+    }
 
     @State("GET ALL Request")
     public void state4() {
