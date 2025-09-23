@@ -1,38 +1,45 @@
 package activities;
 
-import java.io.IOException;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import java.util.HashMap;
-
-import org.hamcrest.Matchers;
+import java.util.Map;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public class Activity3 {
-	
+	// Declare request specification
 	RequestSpecification requestSpec;
+	// Declare response specification
 	ResponseSpecification responseSpec;
-	
+
 	@BeforeClass
 	public void setUp() {
-		requestSpec = new RequestSpecBuilder().
-							addHeader("Content-Type", "application/json").
-							setBaseUri("https://petstore.swagger.io/v2/pet").build();
-		
-		responseSpec = new ResponseSpecBuilder().
-							expectStatusCode(200).
-							expectContentType("application/json").
-							expectBody("status", Matchers.equalTo("alive")).
-							build();
-							
+		// Create request specification
+		requestSpec = new RequestSpecBuilder()
+			// Set content type
+			.addHeader("Content-Type", "application/json")
+			// Set base URL
+			.setBaseUri("https://petstore.swagger.io/v2/pet")
+			// Build request specification
+			.build();
+
+		responseSpec = new ResponseSpecBuilder()
+			// Check status code in response
+			.expectStatusCode(200)
+			// Check response content type
+			.expectContentType("application/json")
+			// Check if response contains name property
+			.expectBody("status", equalTo("alive"))
+			// Build response specification
+			.build();
 	}
-	
+
 	@DataProvider(name = "petInfo")
 	public Object[][] petInfoProvider() {
 		// Setting parameters to pass to test case
@@ -42,46 +49,45 @@ public class Activity3 {
 		};
 		return testData;
 	}
-	
-	
+
 	@Test(priority=1, dataProvider = "petInfo")
 	// Test case using a DataProvider
 	public void addPets(int petId, String petName, String petStatus) {
-		HashMap<String, Object> reqBody = new HashMap<>();
+		Map<String, Object> reqBody = new HashMap<>();
 		reqBody.put("id", petId);
 		reqBody.put("name", petName);
 		reqBody.put("status", petStatus);
 		
-		RestAssured.given().spec(requestSpec) 
-			.body(reqBody) 
-		.when().post() 
-		.then().spec(responseSpec) 
-		.body("name", Matchers.equalTo(petName)); 
+		given().spec(requestSpec) // Use requestSpec
+			.body(reqBody) // Send request body
+		.when()
+			.post() // Send POST request
+		.then().spec(responseSpec) // Assertions using responseSpec
+		.body("name", equalTo(petName)); // Additional Assertion
 	}
- 
+
 	// Test case using a DataProvider
 	@Test( priority=2, dataProvider = "petInfo")
 	public void getPets(int petId, String petName, String petStatus) {
-		RestAssured.given().spec(requestSpec) 
-			.pathParam("petId", petId) 
-			.log().all() 
+		given().spec(requestSpec) // Use requestSpec
+			.pathParam("petId", petId) // Add path parameter
+			.log().all() // Log for request details
 		.when()
-			.get("/{petId}") 
-		.then().spec(responseSpec) 
-		    .body("name", Matchers.equalTo(petName)) 
-		    .log().all(); 
-	}
- 
-	// Test case using a DataProvider
-	@Test(priority=3, dataProvider = "petInfo")
-	public void deletePets(int petId, String petName, String petStatus) throws IOException {
-		RestAssured.given().spec(requestSpec) 
-			.pathParam("petId", petId) 
-		.when()
-			.delete("/{petId}") 
-		.then()
-			.body("code", Matchers.equalTo(200))
-			.body("message", Matchers.equalTo(""+petId)); 
+			.get("/{petId}") // Send GET request
+		.then().spec(responseSpec) // Assertions using responseSpec
+		    .body("name", equalTo(petName)) // Additional Assertion
+		    .log().all(); // Log for request details
 	}
 
+	// Test case using a DataProvider
+	@Test(priority=3, dataProvider = "petInfo")
+	public void deletePets(int petId, String petName, String petStatus) {
+		given().spec(requestSpec) // Use requestSpec
+			.pathParam("petId", petId) // Add path parameter
+		.when()
+			.delete("/{petId}") // Send GET request
+		.then()
+			.body("code", equalTo(200))
+			.body("message", equalTo(""+petId)); // Assertions using responseSpec
+	}
 }
